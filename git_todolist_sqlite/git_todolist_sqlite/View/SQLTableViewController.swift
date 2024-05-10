@@ -190,7 +190,16 @@ class SQLTableViewController: UITableViewController {
         return "삭제"
     }
     
-
+    // 목록 순서 바꾸기
+    // Override to support rearranging the table view.
+    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
+        // 이동할 item의 복사
+        let itemToMove = dataArrayEx[fromIndexPath.row]
+        // 이동할 item의 삭제
+        dataArrayEx.remove(at: fromIndexPath.row)
+        // 이동할 위치에 insert한다.
+        dataArrayEx.insert(itemToMove, at: to.row)
+    }
     /*
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
