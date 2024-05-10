@@ -83,6 +83,9 @@ class SQLTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "myTodoCell", for: indexPath)
 
         // Configure the cell...
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        cell.addGestureRecognizer(longPressRecognizer)
+        
         var content = cell.defaultContentConfiguration()
         content.text = dataArrayEx[indexPath.row].items
         content.image = UIImage(systemName: "square.and.arrow.up")
@@ -91,6 +94,64 @@ class SQLTableViewController: UITableViewController {
         return cell
     }
     
+    @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        if gestureRecognizer.state == .began {
+            // TableViewCell이 길게 눌렸을 때
+            let addAlert = UIAlertController(title: "Todo List", message: "해당 항목을 작업 완료로 설정 하시겠습니까?", preferredStyle: .alert)
+            addAlert.addTextField{ACTION in
+                ACTION.placeholder = "추가 내용"
+            }
+           
+            
+            let cancelAction = UIAlertAction(title: "취소", style: .default)
+            let notComplite = UIAlertAction(title: "미완료", style: .default)
+            let okAction = UIAlertAction(title: "완료", style: .default, handler: {ACTION in
+                guard let tfTodo = addAlert.textFields![0].text else {return}
+                
+                let todoListDB = TodoListDB()
+                let todoItem = tfTodo
+                
+                _ = todoListDB.insertDB(todoItem: todoItem)
+                self.readValues()
+                
+                
+            })
+            addAlert.addAction(cancelAction)
+            addAlert.addAction(okAction)
+            addAlert.addAction(notComplite)
+            
+            present(addAlert, animated: true)
+            
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // TableViewCell이 선택되었을 때
+        let addAlert = UIAlertController(title: "Todo List", message: "수정할 내용을 입력하세요!", preferredStyle: .alert)
+        addAlert.addTextField{ACTION in
+            ACTION.placeholder = "추가 내용"
+        }
+       
+        
+        let cancelAction = UIAlertAction(title: "완료", style: .default)
+        let okAction = UIAlertAction(title: "수정", style: .default, handler: {ACTION in
+            var tfTodo = addAlert.textFields![0].text
+            addAlert.textFields![0].text = self.dataArrayEx[indexPath.row].items
+            let todoListDB = TodoListDB()
+            let todoItem = tfTodo
+            
+//            _ = todoListDB.updateDB(todoItem: todoItem!)
+            self.readValues()
+            
+            
+        })
+        addAlert.addAction(cancelAction)
+        addAlert.addAction(okAction)
+        
+        present(addAlert, animated: true)
+        
+        
+    }
 
     /*
     // Override to support conditional editing of the table view.
