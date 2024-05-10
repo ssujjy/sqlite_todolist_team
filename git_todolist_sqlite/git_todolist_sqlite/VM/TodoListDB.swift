@@ -79,7 +79,41 @@ class TodoListDB{
         
     }
     
+    func updateItem(item: String, id: Int32) -> Bool {
+        var stmt: OpaquePointer?
+        
+        let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+        let queryString = "UPDATE timetodo SET item=? where id=?"
+        
+        sqlite3_prepare(db, queryString, -1, &stmt, nil)
+        
+        sqlite3_bind_text(stmt, 1, item, -1, SQLITE_TRANSIENT)
+        sqlite3_bind_int(stmt, 2, id)
+        
+        if sqlite3_step(stmt) == SQLITE_DONE {
+            return true
+        }
+        
+        return false
+      }
     
+    func updateStatus(complete: Int32, id: Int32) -> Bool {
+        var stmt: OpaquePointer?
+        
+        let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+        let queryString = "UPDATE timetodo SET complete=? where id=?"
+        
+        sqlite3_prepare(db, queryString, -1, &stmt, nil)
+        
+        sqlite3_bind_int(stmt, 1, complete)
+        sqlite3_bind_int(stmt, 2, id)
+        
+        if sqlite3_step(stmt) == SQLITE_DONE {
+            return true
+        }
+        
+        return false
+    }
     
     
     
