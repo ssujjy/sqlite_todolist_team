@@ -10,7 +10,7 @@
         <!--Todo List-->
         <scene sceneID="ajN-Gr-C6q">
             <objects>
-                <tableViewController id="PGU-Z1-YyG" sceneMemberID="viewController">
+                <tableViewController id="PGU-Z1-YyG" customClass="SQLTableViewController" customModule="git_todolist_sqlite" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="myB-Ce-7G5">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -31,8 +31,15 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Todo List" id="ybM-pp-SHb">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="gsn-ul-jck"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="gsn-ul-jck">
+                            <connections>
+                                <action selector="btnInsertItem:" destination="PGU-Z1-YyG" id="XGS-fq-ig1"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="tvTableTodolist" destination="myB-Ce-7G5" id="5cJ-8J-glL"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OfN-Yq-8yV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
