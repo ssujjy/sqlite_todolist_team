@@ -133,7 +133,7 @@ class SQLTableViewController: UITableViewController {
         }
        
         
-        let cancelAction = UIAlertAction(title: "완료", style: .default)
+        let cancelAction = UIAlertAction(title: "취소", style: .default)
         let okAction = UIAlertAction(title: "수정", style: .default, handler: {ACTION in
             var tfTodo = addAlert.textFields![0].text
             addAlert.textFields![0].text = self.dataArrayEx[indexPath.row].items
