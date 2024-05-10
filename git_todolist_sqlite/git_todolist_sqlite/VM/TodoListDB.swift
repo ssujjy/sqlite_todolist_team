@@ -28,7 +28,7 @@ class TodoListDB{
         
         
         //Table 만들기
-        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS timetodo(sid INTEGER PRIMARY KEY AUTOINCREMENT, sitem TEXT)", nil,nil,nil) != SQLITE_OK{
+        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS timetodo(sid INTEGER PRIMARY KEY AUTOINCREMENT, sitem TEXT, complete INTEGER, rank INTEGER)", nil,nil,nil) != SQLITE_OK{
             let errMsg = String(cString: sqlite3_errmsg(db))
             print("error creating table : \(errMsg)")
         }
@@ -46,10 +46,13 @@ class TodoListDB{
         
         while(sqlite3_step(stmt) == SQLITE_ROW){
             let id = Int(sqlite3_column_int(stmt, 0))
-            let todoItems = String(cString: sqlite3_column_text(stmt, 1))
+            let item = String(cString: sqlite3_column_text(stmt, 1))
+            let complete = Int(sqlite3_column_int(stmt, 2))
+            let rank = Int(sqlite3_column_int(stmt, 3))
+            
 
             
-            todoLists.append(TodoLists(id: Int32(id), items: todoItems))
+            todoLists.append(TodoLists(id: Int32(id), items: item, complete: Int32(complete), rank: Int32(rank)))
             
         }
         
@@ -57,15 +60,16 @@ class TodoListDB{
         
     }
     
-    func insertDB(todoItem: String) -> Bool{
+    func insertDB(item: String, complete: Int32, rank: Int32) -> Bool{
         var stmt: OpaquePointer?
         let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-        let queryString = "INSERT INTO timetodo (sitem) VALUES (?)"
+        let queryString = "INSERT INTO timetodo (sitem, complete, rank) VALUES (?, ?, ?)"
         
         sqlite3_prepare(db, queryString, -1, &stmt, nil)
         
-        sqlite3_bind_text(stmt, 1, todoItem, -1, SQLITE_TRANSIENT)
-
+        sqlite3_bind_text(stmt, 1, item, -1, SQLITE_TRANSIENT)
+        sqlite3_bind_int(stmt, 2, complete)
+        sqlite3_bind_int(stmt, 3, rank)
         
         if sqlite3_step(stmt) == SQLITE_DONE{
             return true
