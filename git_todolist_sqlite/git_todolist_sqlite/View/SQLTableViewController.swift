@@ -14,7 +14,9 @@ class SQLTableViewController: UITableViewController {
     var dataArrayEx: [TodoLists] = []
 
     
-    
+    var id: Int32 = 0
+    var complete: Int32 = 0
+    var items: String = ""
     
     
 
@@ -55,7 +57,7 @@ class SQLTableViewController: UITableViewController {
             let todoListDB = TodoListDB()
             let todoItem = tfTodo
             
-            _ = todoListDB.insertDB(todoItem: todoItem)
+            _ = todoListDB.insertDB(item: todoItem)
             self.readValues()
             
             
@@ -83,6 +85,11 @@ class SQLTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "myTodoCell", for: indexPath)
 
         // Configure the cell...
+        
+        id = dataArrayEx[indexPath.row].id
+        complete = dataArrayEx[indexPath.row].complete
+        items = dataArrayEx[indexPath.row].items
+        
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         cell.addGestureRecognizer(longPressRecognizer)
         
@@ -100,18 +107,23 @@ class SQLTableViewController: UITableViewController {
             let addAlert = UIAlertController(title: "Todo List", message: "해당 항목을 작업 완료로 설정 하시겠습니까?", preferredStyle: .alert)
             addAlert.addTextField{ACTION in
                 ACTION.placeholder = "추가 내용"
+                ACTION.text = self.items
+                
             }
-           
+            print(self.id)
+            print(self.items)
+            print(self.complete)
             
             let cancelAction = UIAlertAction(title: "취소", style: .default)
             let notComplite = UIAlertAction(title: "미완료", style: .default)
             let okAction = UIAlertAction(title: "완료", style: .default, handler: {ACTION in
                 guard let tfTodo = addAlert.textFields![0].text else {return}
                 
-                let todoListDB = TodoListDB()
-                let todoItem = tfTodo
                 
-                _ = todoListDB.insertDB(todoItem: todoItem)
+                let todoListDB = TodoListDB()
+                
+                
+                _ = todoListDB.updateStatus(complete: 1, id: self.id)
                 self.readValues()
                 
                 

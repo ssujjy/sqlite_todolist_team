@@ -60,16 +60,14 @@ class TodoListDB{
         
     }
     
-    func insertDB(item: String, complete: Int32, rank: Int32) -> Bool{
+    func insertDB(item: String) -> Bool{
         var stmt: OpaquePointer?
         let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-        let queryString = "INSERT INTO timetodo (sitem, complete, rank) VALUES (?, ?, ?)"
+        let queryString = "INSERT INTO timetodo (sitem, complete, rank) VALUES (?, 0, 0)"
         
         sqlite3_prepare(db, queryString, -1, &stmt, nil)
         
         sqlite3_bind_text(stmt, 1, item, -1, SQLITE_TRANSIENT)
-        sqlite3_bind_int(stmt, 2, complete)
-        sqlite3_bind_int(stmt, 3, rank)
         
         if sqlite3_step(stmt) == SQLITE_DONE{
             return true
